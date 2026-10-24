@@ -10,11 +10,11 @@ This project analyses the effectiveness of language learning apps across differe
 
 | File | Description |
 |---|---|
-| `Fake_data.py` | Generates synthetic raw data with intentional anomalies |
+| `generate_synthetic_data.py` | Generates synthetic raw data with intentional anomalies |
 | `raw_apps_data.csv` | Raw output from the data generator |
-| `eda_audit.sql` | Exploratory data analysis and audit queries on the raw data |
-| `transformation.sql` | Full silver-layer cleaning and deduplication pipeline |
-| `gold.sql` | Gold-layer star schema — `dim_users` and `fact_session` |
+| `01_bronze_eda_audit.sql` | Exploratory data analysis and audit queries on the raw data |
+| `02_silver_transformation.sql` | Full silver-layer cleaning and deduplication pipeline |
+| `03_gold_star_schema.sql` | Gold-layer star schema — `dim_users` and `fact_session` |
 | `Language_apps_performance.pbix` | Power BI dashboard |
 
 ---
@@ -75,10 +75,9 @@ This is implemented as a pairwise self-join with NULL-safe column scoring, rathe
 ### Gold — `gold.sql`
 Splits the clean silver table into a star schema:
 
-- **`analytics.dim_users`** — one row per user, with `user_key` as a surrogate primary key (`GENERATED ALWAYS AS IDENTITY`). `user_id` is retained as a `NOT NULL UNIQUE` natural key.
-- **`analytics.fact_session`** — one row per session, with `session_key` as a surrogate primary key. References `dim_users` via `user_key` as a foreign key, obtained by joining on `user_id` during the insert.
+- **`analytics.dim_users`** — one row per user, with `user_key` as a surrogate primary key.
 
-Surrogate keys follow dimensional modelling best practices: they are stable, integer-based, and independent of source system values.
+- **`analytics.fact_session`** — one row per session, with `session_key` as a surrogate primary key. References `dim_users` via `user_key` as a foreign key, obtained by joining on `user_id` during the insert.
 
 ---
 
@@ -104,5 +103,4 @@ The dashboard will explore:
 ## Assumptions & Limitations
 
 - `user_id` and `session_id` are assumed non-NULL by construction of the data generator. In a production pipeline, a NULL-tolerant strategy using profile hashing and a sentinel dimension member would be required.
-- Duplicate resolution uses alphabetical `user_id` as the tiebreaker — a simplification appropriate for synthetic data.
 - The dataset is static. No incremental load or SCD (Slowly Changing Dimension) logic is implemented.
