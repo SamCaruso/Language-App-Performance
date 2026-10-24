@@ -21,7 +21,7 @@ This project analyses the effectiveness of language learning apps across differe
 
 ## Data Generation
 
-Synthetic data was generated using Python's `Faker` library (`Fake_data.py`). The dataset simulates 900 users across 7 countries, each with between 3 and 11 learning sessions.
+Synthetic data was generated using Python's `Faker` library (`generate_synthetic_data.py`). The dataset simulates 900 users across 7 countries, each with between 3 and 11 learning sessions.
 
 Intentional anomalies were injected to simulate real-world data quality issues:
 - `NULL` values and literal `'NULL'` strings
@@ -29,9 +29,9 @@ Intentional anomalies were injected to simulate real-world data quality issues:
 - Logically incoherent records (e.g. end date before start date, end level below start level)
 
 For the purposes of this portfolio project:
-- session_id, user_id and session_timestamp are always NON-NULL and in a valid format
+- `session_id`, `user_id` and `session_timestamp` are always NON-NULL and in a valid format
 - The dataset spans a 3-year period
-- native_language is directly linked to country, i.e. Italy -> Italian 
+- `native_language` is directly linked to `country`, i.e. Italy -> Italian 
 
 ---
 
@@ -48,7 +48,7 @@ raw_apps_data         clean_apps_data            dim_users
 ### Bronze
 Raw CSV data loaded as-is into `staging.raw_apps_data`. No transformations applied.
 
-### Silver — `transformation.sql`
+### Silver — `02_silver_transformation.sql`
 The raw data is cleaned and transformed through a multi-step CTE pipeline in PostgreSQL.
 
 The pipeline covers:
@@ -72,7 +72,7 @@ This is implemented as a pairwise self-join with NULL-safe column scoring, rathe
 
 > **Production note:** The self-join approach is O(n²) and suited to small-to-medium datasets. At scale, a blocking or profile-hashing strategy would be used instead.
 
-### Gold — `gold.sql`
+### Gold — `03_gold_star_schema.sql`
 Splits the clean silver table into a star schema:
 
 - **`analytics.dim_users`** — one row per user, with `user_key` as a surrogate primary key.
@@ -91,16 +91,28 @@ Splits the clean silver table into a star schema:
 
 ## Power BI Dashboard
 
-*(In progress)*
+The interactive dashboard contains four analytical views exploring app usage, user learning progression, and engagement patterns.
 
-The dashboard will explore:
-- CEFR level progression by app, country, and subscription type
-- Session frequency and duration patterns
-- User distribution across apps and native languages
+### 1. Overview & Usage
+High-level metrics comparing session volume and user distribution across the five language-learning apps, with filters for country, age group, and subscription type.
+![Dashboard overview](images/sessions_&_users_by_app)
+
+### 2. Learning Progression by App
+Average CEFR level progression (scores between 0 and 5) across apps between user groups.
+![Progress by App](images/progress_by_app)
+
+### 3. Learning Progression by Session Count
+Relationship between users' session counts and average CEFR level progression, grouped by session frequency.
+![Progress by Session Count](images/progress_by_session_count)
+
+### 4. Learning Progression by Total Study Duration
+Behavioral analysis mapping total session duration ranges against learning progression.
+![Progress by Session Duration](images/progress_by_session_duration)
 
 ---
 
-## Assumptions & Limitations
+## Assumptions, Limitations & Further Improvements
 
 - `user_id` and `session_id` are assumed non-NULL by construction of the data generator. In a production pipeline, a NULL-tolerant strategy using profile hashing and a sentinel dimension member would be required.
+- if two `session_timestamp`s belong to the same user, they should be checked against `session_duration_mins` to verify plausibility (if the two `session_timestamp`s are 3 seconds apart but the first one lasts 30 minutes, a validity issue endues).
 - The dataset is static. No incremental load or SCD (Slowly Changing Dimension) logic is implemented.

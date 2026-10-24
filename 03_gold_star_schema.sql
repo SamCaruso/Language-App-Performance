@@ -59,46 +59,7 @@ ORDER BY session_id;
 
 SELECT *
 FROM analytics.fact_session;
+
 SELECT *
 FROM analytics.dim_users
 ORDER BY user_key;
-
-SELECT count(user_key)
-FROM analytics.dim_users du 
-WHERE app = 'Rosetta Stone';
-
-SELECT app, count(*)
-FROM analytics.dim_users du
-GROUP BY app;
-
-SELECT app, count(*)
-FROM intermediate.clean_apps_data cad 
-GROUP BY app;
-
-SELECT app, count(*)
-FROM intermediate.clean_apps_data cad 
-WHERE app = 'Speedlang' AND age BETWEEN 14 AND 25
-GROUP BY app;
-
-SELECT *
-FROM staging.raw_apps_data rad 
-WHERE name = 'Kerry Wyatt';
-
-SELECT app, count(country)
-FROM analytics.dim_users du 
-WHERE country = 'Argentina'
-GROUP BY app;
-
-SELECT app, count(*)
-FROM analytics.dim_users
---WHERE app = 'Babble'
-GROUP BY app
-;
-SELECT country, count(app)
-FROM analytics.dim_users 
-GROUP BY country;
-
-SELECT app, count(session_id)
-FROM intermediate.clean_apps_data cad  
-WHERE country = 'Argentina' AND age BETWEEN 26 AND 35
-GROUP BY app;
