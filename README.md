@@ -95,19 +95,19 @@ The interactive dashboard contains four analytical views exploring app usage, us
 
 ### 1. Overview & Usage
 High-level metrics comparing session volume and user distribution across the five language-learning apps, with filters for country, age group, and subscription type.
-![Dashboard overview](images/sessions_&_users_by_app)
+![Dashboard overview](images/sessions_&_users_by_app.png)
 
 ### 2. Learning Progression by App
 Average CEFR level progression (scores between 0 and 5) across apps between user groups.
-![Progress by App](images/progress_by_app)
+![Progress by App](images/progress_by_app.png)
 
 ### 3. Learning Progression by Session Count
 Relationship between users' session counts and average CEFR level progression, grouped by session frequency.
-![Progress by Session Count](images/progress_by_session_count)
+![Progress by Session Count](images/progress_by_session_count.png)
 
 ### 4. Learning Progression by Total Study Duration
 Behavioral analysis mapping total session duration ranges against learning progression.
-![Progress by Session Duration](images/progress_by_session_duration)
+![Progress by Session Duration](images/progress_by_session_duration.png)
 
 ---
 
