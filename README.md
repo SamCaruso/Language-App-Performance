@@ -91,7 +91,7 @@ Splits the clean silver table into a star schema:
 
 ## Power BI Dashboard
 
-The interactive dashboard contains four analytical views exploring app usage, user learning progression, and engagement patterns.
+The interactive dashboard contains four analytical views exploring app usage, user learning progression, and engagement patterns. THE RESULTS MIGHT APPEAR JARRING BECAUSE THE DATA IS FAKE AND RANDOMISED.
 
 ### 1. Overview & Usage
 High-level metrics comparing session volume and user distribution across the five language-learning apps, with filters for country, age group, and subscription type.
@@ -114,5 +114,5 @@ Behavioral analysis mapping total session duration ranges against learning progr
 ## Assumptions, Limitations & Further Improvements
 
 - `user_id` and `session_id` are assumed non-NULL by construction of the data generator. In a production pipeline, a NULL-tolerant strategy using profile hashing and a sentinel dimension member would be required.
-- if two `session_timestamp`s belong to the same user, they should be checked against `session_duration_mins` to verify plausibility (if the two `session_timestamp`s are 3 seconds apart but the first one lasts 30 minutes, a validity issue endues).
+- if two `session_timestamp`s belong to the same user, they should be checked against `session_duration_mins` to verify plausibility (if the two `session_timestamp`s are 3 seconds apart but the first one lasts 30 minutes, a validity issue arises).
 - The dataset is static. No incremental load or SCD (Slowly Changing Dimension) logic is implemented.
